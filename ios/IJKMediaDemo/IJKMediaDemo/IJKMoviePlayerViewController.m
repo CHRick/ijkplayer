@@ -119,7 +119,19 @@
 }
 
 #pragma mark IBAction
-
+- (IBAction)onClickRecord:(id)sender
+{
+    if ([self.player isRecording]) {
+        [self.player stopRecord];
+        NSLog(@"#### Stop Record ####");
+    }else {
+        NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+        NSString *fileName = [NSString stringWithFormat:@"%.0f.mov", [[NSDate date] timeIntervalSince1970]];
+        NSString *path = [docDir stringByAppendingPathComponent:fileName];
+        [self.player startRecordWithFileName:path];
+        NSLog(@"#### Start Record ####");
+    }
+}
 - (IBAction)onClickMediaControl:(id)sender
 {
     [self.mediaControl showAndFade];
@@ -139,9 +151,17 @@
 {
     if ([self.player isKindOfClass:[IJKFFMoviePlayerController class]]) {
         IJKFFMoviePlayerController *player = self.player;
-        player.shouldShowHudView = !player.shouldShowHudView;
-        
-        sender.title = (player.shouldShowHudView ? @"HUD On" : @"HUD Off");
+//        player.shouldShowHudView = !player.shouldShowHudView;
+        if (player.playbackRate == 1.0) {
+            [player setPlaybackRate:2.0];
+            sender.title = @"2.0";
+        }else if (player.playbackRate == 2.0) {
+            [player setPlaybackRate:0.5];
+            sender.title = @"0.5";
+        }else if (player.playbackRate == 0.5) {
+            [player setPlaybackRate:1.0];
+            sender.title = @"1.0";
+        }
     }
 }
 

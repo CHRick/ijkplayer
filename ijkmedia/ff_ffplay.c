@@ -2343,7 +2343,7 @@ static int ffplay_video_thread(void *arg)
             goto the_end;
     }
  the_end:
-#if CONFIG_AVFILTERyu
+#if CONFIG_AVFILTER
     avfilter_graph_free(&graph);
 #endif
     av_log(NULL, AV_LOG_INFO, "convert image convert_frame_count = %d\n", convert_frame_count);

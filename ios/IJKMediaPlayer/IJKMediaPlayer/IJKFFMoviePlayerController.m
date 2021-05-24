@@ -442,6 +442,20 @@ void IJKFFIOStatCompleteRegister(void (*cb)(const char *url,
     ijkmp_stop(_mediaPlayer);
 }
 
+- (void)stopRecord {
+    ijkmp_stop_recording(_mediaPlayer);
+}
+
+- (void)startRecordWithFileName:(NSString *)fileName {
+    // 视频存储的路径
+    const char *path = [fileName cStringUsingEncoding:NSUTF8StringEncoding];
+    ijkmp_start_recording(_mediaPlayer, path);
+}
+
+- (BOOL)isRecording {
+    return ijkmp_isRecording(_mediaPlayer);
+}
+
 - (BOOL)isPlaying
 {
     if (!_mediaPlayer)

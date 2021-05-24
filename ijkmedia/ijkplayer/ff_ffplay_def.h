@@ -720,6 +720,23 @@ typedef struct FFPlayer {
     char *mediacodec_default_name;
     int ijkmeta_delay_init;
     int render_wait_start;
+    AVFormatContext *m_ofmt_ctx;        // 用于输出的AVFormatContext结构体
+    AVOutputFormat *m_ofmt;
+    pthread_mutex_t record_mutex;       // 锁
+    int is_record;                      // 是否在录制
+    int record_error;
+    
+    int is_first;                       // 第一帧数据
+    int64_t start_v_pts;                // 开始录制时pts 视频
+    int64_t start_v_dts;                // 开始录制时dts 视频
+    int64_t start_a_pts;                // 开始录制时pts 音频
+    int64_t start_a_dts;                // 开始录制时dts 音频
+    int64_t start_pos;
+    int is_screenshot;                  //是否截图,是一次性的，一次只能截一张图
+    char *screen_file_name;             //输出图片的路径 screen_file_name;截图保存地址
+    AVPacket *k_pkt;
+    int video_index;
+    int audio_index;
 } FFPlayer;
 
 #define fftime_to_milliseconds(ts) (av_rescale(ts, 1000, AV_TIME_BASE))

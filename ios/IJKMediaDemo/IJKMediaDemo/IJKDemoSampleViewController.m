@@ -35,7 +35,12 @@
     self.title = @"M3U8";
 
     NSMutableArray *sampleList = [[NSMutableArray alloc] init];
-
+    [sampleList addObject:@[@"宣传视频",
+                            @"http://promotional.gxycc.cmcqly.com:91/promotionalVideoV1.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=NjWHFEJM603d26cHd646157k2W77t4n9%2F20210331%2Feast-1%2Fs3%2Faws4_request&X-Amz-Date=20210331T022522Z&X-Amz-Expires=1893430861&X-Amz-SignedHeaders=host&X-Amz-Signature=ed451f2c78e77a2dfe71ed9118a220cfac4904d65410126004c8777bb63be6f7"]];
+    [sampleList addObject:@[@"电影简介视频",
+                            @"http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"]];
+    [sampleList addObject:@[@"mp4视频",
+                            @"http://hdaswycc.hdaswycc.cmqly.com/30/HIK596h889b53t349SfQi2UU7KOhs54K/Q01030A2101A12K6HCKR/2021/05/17/20210517001107_20210517001210.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=HIK596h889b53t349SfQi2UU7KOhs54K%2F20210517%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210517T125618Z&X-Amz-Expires=431999&X-Amz-SignedHeaders=host&X-Amz-Signature=5497884f3df680ff0a9de69e9ef8d286dd330b5b9a68ccd7e06fcf44c8bd1eca"]];
     [sampleList addObject:@[@"bipbop basic master playlist",
                             @"http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8"]];
     [sampleList addObject:@[@"bipbop basic 400x300 @ 232 kbps",

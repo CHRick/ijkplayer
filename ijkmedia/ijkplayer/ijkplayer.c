@@ -547,6 +547,56 @@ int ijkmp_stop(IjkMediaPlayer *mp)
     return retval;
 }
 
+static int ijkmp_start_recording_l(IjkMediaPlayer *mp,const char *filePath)
+{
+//  av_log(mp->ffplayer,AV_LOG_WARING,"cjz ijkmp_start_recording_l filePath %s",filePath);
+  return ffp_start_recording_l(mp->ffplayer,filePath);
+}
+
+int ijkmp_start_recording(IjkMediaPlayer *mp,const char *filePath)
+{
+  assert(mp);
+  pthread_mutex_lock(&mp->mutex);
+  av_log(mp->ffplayer,AV_LOG_WARNING,"cjz ijkmp_start_recording");
+  int retval = ijkmp_start_recording_l(mp,filePath);
+  pthread_mutex_unlock(&mp->mutex);
+  return retval;
+}
+
+static int ijkmp_stop_recording_l(IjkMediaPlayer *mp)
+{
+  return ffp_stop_recording_l(mp->ffplayer);
+}
+
+int ijkmp_stop_recording(IjkMediaPlayer *mp)
+{
+  assert(mp);
+  pthread_mutex_lock(&mp->mutex);
+  av_log(mp->ffplayer,AV_LOG_WARNING,"cjz ijkmp_stop_recording");
+  int retval = ijkmp_stop_recording_l(mp);
+  pthread_mutex_unlock(&mp->mutex);
+  return retval;
+}
+
+static int ijkmp_isRecordFinished_l(IjkMediaPlayer *mp)
+{
+ return ffp_record_isfinished_l(mp->ffplayer);
+}
+
+int ijkmp_isRecordFinished(IjkMediaPlayer *mp)
+{
+  assert(mp);
+ pthread_mutex_lock(&mp->mutex);
+ av_log(mp->ffplayer,AV_LOG_WARNING,"cjz ijkmp_isRecordFinished ");
+ int retval = ijkmp_isRecordFinished_l(mp);
+ pthread_mutex_unlock(&mp->mutex);
+ return retval;
+}
+
+int ijkmp_isRecording(IjkMediaPlayer *mp) {
+    return mp->ffplayer->is_record;
+}
+
 bool ijkmp_is_playing(IjkMediaPlayer *mp)
 {
     assert(mp);
