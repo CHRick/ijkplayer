@@ -3361,20 +3361,6 @@ static int read_thread(void *arg)
     }
 
     for (;;) {
-//        //插入
-//        if (!ffp->is_first && pkt->pts == pkt->dts) { // 获取开始录制前dts等于pts最后的值，用于
-//            if (pkt->stream_index == AVMEDIA_TYPE_AUDIO) {
-//                ffp->start_a_pts = pkt->pts;
-//                ffp->start_a_dts = pkt->dts;
-//            }
-//        }
-//        if (pkt->stream_index == AVMEDIA_TYPE_VIDEO) {
-//            if (!ffp->is_first) {
-//                ffp->start_v_pts = pkt->pts;
-//                ffp->start_v_dts = pkt->dts;
-//            }
-//        }
-        ffp->start_pos = pkt->pos;
         if (is->abort_request)
             break;
 #ifdef FFP_MERGE
@@ -3396,13 +3382,6 @@ static int read_thread(void *arg)
             continue;
         }
 #endif
-//#pragma  mark - 录制插入
-//        if (ffp->is_record && !is->paused) { // 可以录制时，写入文件
-//            if (0 != ffp_record_file(ffp, pkt)) {
-//                ffp->record_error = 1;
-//                ffp_stop_recording_l(ffp);
-//            }
-//        }
         if (is->seek_req) {
             int64_t seek_target = is->seek_pos;
             int64_t seek_min    = is->seek_rel > 0 ? seek_target - is->seek_rel + 2: INT64_MIN;
