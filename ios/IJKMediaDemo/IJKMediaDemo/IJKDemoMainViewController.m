@@ -23,6 +23,7 @@
 #import "IJKDemoLocalFolderViewController.h"
 #import "IJKDemoSampleViewController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+#import <IJKMediaFramework/IJKMediaFramework.h>
 
 @interface IJKDemoMainViewController () <UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -54,6 +55,12 @@
     [documentsUrl setResourceValue:[NSNumber numberWithBool:YES]
                             forKey:NSURLIsExcludedFromBackupKey
                              error:&error];
+    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *inpath = [docDir stringByAppendingPathComponent:@"1622010462.mov"];
+    NSString *outpath = [docDir stringByAppendingPathComponent:@"final.mp4"];
+    int ret = [IJKMediaUtils transcodeFile:inpath toFile:outpath];
+    NSLog(@"%d", ret);
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {

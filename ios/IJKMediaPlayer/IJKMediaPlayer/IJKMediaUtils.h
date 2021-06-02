@@ -30,4 +30,7 @@
                       description: (NSString*)description
                            reason: (NSString*)reason;
 
++ (int)transcodeFile:(NSString *)inputFile
+              toFile:(NSString *)outputFile;
+
 @end
