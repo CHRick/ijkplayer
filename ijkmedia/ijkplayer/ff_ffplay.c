@@ -1709,7 +1709,6 @@ static int get_video_frame(FFPlayer *ffp, AVFrame *frame)
     ffp_video_statistic_l(ffp);
     if ((got_picture = decoder_decode_frame(ffp, &is->viddec, frame, NULL)) < 0)
         return -1;
-
     if (got_picture) {
         double dpts = NAN;
 

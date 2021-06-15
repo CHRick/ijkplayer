@@ -15,6 +15,11 @@
 #include "libavutil/opt.h"
 #include "libavutil/pixdesc.h"
 
+/** The output bit rate in kbit/s */
+#define OUTPUT_BIT_RATE 96000
+/** The number of output channels */
+#define OUTPUT_CHANNELS 2
+
 static AVFormatContext *ifmt_ctx;
 static AVFormatContext *ofmt_ctx;
 typedef struct FilteringContext {
@@ -106,10 +111,13 @@ static int open_output_file(const char *filename)
 
     
     for (i = 0; i < ifmt_ctx->nb_streams; i++) {
-        out_stream = avformat_new_stream(ofmt_ctx, NULL);
-        if (!out_stream) {
-            av_log(NULL, AV_LOG_ERROR, "Failed allocating output stream\n");
-            return AVERROR_UNKNOWN;
+        
+        if (ifmt_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO || ifmt_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
+            out_stream = avformat_new_stream(ofmt_ctx, NULL);
+            if (!out_stream) {
+                av_log(NULL, AV_LOG_ERROR, "Failed allocating output stream\n");
+                return AVERROR_UNKNOWN;
+            }
         }
 
         in_stream = ifmt_ctx->streams[i];
@@ -120,7 +128,7 @@ static int open_output_file(const char *filename)
             /* in this example, we choose transcoding to same codec */
             if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO) {
                 encoder = avcodec_find_encoder(dec_ctx->codec_id);
-            }else if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO) {
+            }else if (dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO) {
                 encoder = avcodec_find_encoder(AV_CODEC_ID_AAC);
             }
             if (!encoder) {
@@ -146,14 +154,15 @@ static int open_output_file(const char *filename)
                 else
                     enc_ctx->pix_fmt = dec_ctx->pix_fmt;
                 /* video time_base can be set to whatever is handy and supported by encoder */
-                enc_ctx->time_base = av_inv_q(dec_ctx->framerate);
+                enc_ctx->time_base = dec_ctx->time_base;//av_inv_q(dec_ctx->framerate);
             } else {
                 enc_ctx->sample_rate = dec_ctx->sample_rate;
-                enc_ctx->channel_layout = dec_ctx->channel_layout;
-                enc_ctx->channels = av_get_channel_layout_nb_channels(enc_ctx->channel_layout);
-                /* take first format from list of supported formats */
+                enc_ctx->channels = OUTPUT_CHANNELS;
+                enc_ctx->channel_layout = av_get_default_channel_layout(OUTPUT_CHANNELS);
                 enc_ctx->sample_fmt = encoder->sample_fmts[0];
+                enc_ctx->bit_rate = dec_ctx->bit_rate;
                 enc_ctx->time_base = (AVRational){1, enc_ctx->sample_rate};
+                enc_ctx->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
             }
 
             /* Third parameter can be used to pass settings to encoder */
@@ -201,6 +210,116 @@ static int open_output_file(const char *filename)
     if (ret < 0) {
         av_log(NULL, AV_LOG_ERROR, "Error occurred when opening output file\n");
         return ret;
+    }
+
+    return 0;
+}
+
+/**
+ * Initialize the audio resampler based on the input and output codec settings.
+ * If the input and output sample formats differ, a conversion is required
+ * libswresample takes care of this, but requires initialization.
+ */
+static int init_resampler(AVCodecContext *input_codec_context,
+                          AVCodecContext *output_codec_context,
+                          SwrContext **resample_context)
+{
+        int error;
+
+        /**
+         * Create a resampler context for the conversion.
+         * Set the conversion parameters.
+         * Default channel layouts based on the number of channels
+         * are assumed for simplicity (they are sometimes not detected
+         * properly by the demuxer and/or decoder).
+         */
+    *resample_context =
+    swr_alloc_set_opts(NULL,
+                       av_get_default_channel_layout(output_codec_context->channels),
+                       output_codec_context->sample_fmt,
+                       output_codec_context->sample_rate,
+                       av_get_default_channel_layout(input_codec_context->channels),
+                       input_codec_context->sample_fmt,
+                       input_codec_context->sample_rate,
+                       0, NULL);
+        if (!*resample_context) {
+            fprintf(stderr, "Could not allocate resample context\n");
+            return AVERROR(ENOMEM);
+        }
+        /**
+        * Perform a sanity check so that the number of converted samples is
+        * not greater than the number of samples to be converted.
+        * If the sample rates differ, this case has to be handled differently
+        */
+        av_assert0(output_codec_context->sample_rate == input_codec_context->sample_rate);
+
+        /** Open the resampler with the specified parameters. */
+        if ((error = swr_init(*resample_context)) < 0) {
+            fprintf(stderr, "Could not open resample context\n");
+            swr_free(resample_context);
+            return error;
+        }
+    return 0;
+}
+
+/**
+ * Initialize a temporary storage for the specified number of audio samples.
+ * The conversion requires temporary storage due to the different format.
+ * The number of audio samples to be allocated is specified in frame_size.
+ */
+static int init_converted_samples(uint8_t ***converted_input_samples,
+                                  AVCodecContext *output_codec_context,
+                                  int frame_size)
+{
+    int error;
+
+    /**
+     * Allocate as many pointers as there are audio channels.
+     * Each pointer will later point to the audio samples of the corresponding
+     * channels (although it may be NULL for interleaved formats).
+     */
+    if (!(*converted_input_samples = calloc(output_codec_context->channels,
+                                            sizeof(**converted_input_samples)))) {
+        fprintf(stderr, "Could not allocate converted input sample pointers\n");
+        return AVERROR(ENOMEM);
+    }
+
+    /**
+     * Allocate memory for the samples of all channels in one consecutive
+     * block for convenience.
+     */
+    if ((error = av_samples_alloc(*converted_input_samples, NULL,
+                                  output_codec_context->channels,
+                                  frame_size,
+                                  output_codec_context->sample_fmt, 0)) < 0) {
+        fprintf(stderr,
+                "Could not allocate converted input samples (error '%s')\n",
+                av_err2str(error));
+        av_freep(&(*converted_input_samples)[0]);
+        free(*converted_input_samples);
+        return error;
+    }
+    return 0;
+}
+
+/**
+ * Convert the input audio samples into the output sample format.
+ * The conversion happens on a per-frame basis, the size of which is specified
+ * by frame_size.
+ */
+static int convert_samples(const uint8_t **input_data,
+                           uint8_t **converted_data, const int frame_size,
+                           SwrContext *resample_context)
+{
+    int error;
+
+    /** Convert the samples using the resampler. */
+    if ((error = swr_convert(resample_context,
+                             converted_data, frame_size,
+                             input_data    , frame_size)) < 0) {
+        fprintf(stderr, "Could not convert input samples (error '%s')\n",
+                av_err2str(error));
+        return error;
     }
 
     return 0;
@@ -357,7 +476,7 @@ end:
 
 static int init_filters(void)
 {
-    const char *filter_spec;
+    char *filter_spec;
     unsigned int i;
     int ret;
     filter_ctx = av_malloc_array(ifmt_ctx->nb_streams, sizeof(*filter_ctx));
@@ -374,9 +493,9 @@ static int init_filters(void)
 
 
         if (ifmt_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
-            filter_spec = "null"; /* passthrough (dummy) filter for video */
+            filter_spec = "copy"; /* passthrough (dummy) filter for video */
         else
-            filter_spec = "anull"; /* passthrough (dummy) filter for audio */
+            filter_spec = "afifo"; /* passthrough (dummy) filter for audio */
         ret = init_filter(&filter_ctx[i], stream_ctx[i].dec_ctx,
                 stream_ctx[i].enc_ctx, filter_spec);
         if (ret)
@@ -416,8 +535,10 @@ static int encode_write_frame(AVFrame *filt_frame, unsigned int stream_index, in
                          ofmt_ctx->streams[stream_index]->time_base);
 
     av_log(NULL, AV_LOG_DEBUG, "Muxing frame\n");
-    /* mux encoded frame */
-    ret = av_interleaved_write_frame(ofmt_ctx, &enc_pkt);
+    if (enc_pkt.pts > 0) {
+        /* mux encoded frame */
+        ret = av_interleaved_write_frame(ofmt_ctx, &enc_pkt);
+    }
     return ret;
 }
 
@@ -490,6 +611,9 @@ int ffp_transcoding_file(const char *in_file,const char *out_file) {
     int ret;
     AVPacket packet = { .data = NULL, .size = 0};
     AVFrame *frame = NULL;
+    SwrContext *resample_context = NULL;
+    /** Temporary storage for the converted input samples. */
+    uint8_t **converted_input_samples = NULL;
     enum AVMediaType type;
     unsigned int stream_index;
     unsigned int i;
@@ -506,6 +630,8 @@ int ffp_transcoding_file(const char *in_file,const char *out_file) {
     if ((ret = open_input_file(in_file)) < 0)
         goto end;
     if ((ret = open_output_file(out_file)) < 0)
+        goto end;
+    if ((ret = init_resampler(stream_ctx[1].dec_ctx, stream_ctx[1].enc_ctx, &resample_context)))
         goto end;
     if ((ret = init_filters()) < 0)
         goto end;
@@ -535,7 +661,19 @@ int ffp_transcoding_file(const char *in_file,const char *out_file) {
                 break;
             }
             if (got_frame) {
-                frame->pts = frame->best_effort_timestamp;
+                if (type == AVMEDIA_TYPE_AUDIO) {
+                    if (init_converted_samples(&converted_input_samples, stream_ctx[stream_index].enc_ctx, frame->nb_samples)) {
+                        goto end;
+                    }
+                    /**
+                    * Convert the input samples to the desired output sample format.
+                    * This requires a temporary storage provided by converted_input_samples.
+                    */
+                    if (convert_samples((const uint8_t**)frame->extended_data, converted_input_samples,
+                                                frame->nb_samples, resample_context))
+                        goto end;
+                }
+                frame->pts = packet.pts;//frame->best_effort_timestamp;
                 ret = filter_encode_write_frame(frame, stream_index);
                 av_frame_free(&frame);
                 if (ret < 0)

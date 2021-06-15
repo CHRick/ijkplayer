@@ -53,6 +53,12 @@
         NSString *fullFileName = [_folderPath stringByAppendingPathComponent:fileName];
         
         [[NSFileManager defaultManager] fileExistsAtPath:fullFileName isDirectory:&isDirectory];
+        if ([fileName hasSuffix:@"log"]) {
+            [[NSFileManager defaultManager] removeItemAtPath:fullFileName error:nil];
+        }
+        if (![fileName hasSuffix:@"mov"] && ![fileName hasSuffix:@"mp4"]) {
+            [[NSFileManager defaultManager] removeItemAtPath:fullFileName error:nil];
+        }
         if (isDirectory) {
             [_subpaths addObject:fileName];
         } else {

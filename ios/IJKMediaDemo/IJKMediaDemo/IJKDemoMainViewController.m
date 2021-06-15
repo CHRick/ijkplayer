@@ -56,11 +56,32 @@
                             forKey:NSURLIsExcludedFromBackupKey
                              error:&error];
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *inpath = [docDir stringByAppendingPathComponent:@"1622010462.mov"];
-    NSString *outpath = [docDir stringByAppendingPathComponent:@"final.mp4"];
+    NSString *inpath = [docDir stringByAppendingPathComponent:@"1623736319.mov"];
+    NSString *outpath = [docDir stringByAppendingPathComponent:@"final.mov"];
     int ret = [IJKMediaUtils transcodeFile:inpath toFile:outpath];
     NSLog(@"%d", ret);
     
+}
+
+- (void)deleteFile {
+    
+    NSString *extension = @"log";
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+
+    NSArray *contents = [fileManager contentsOfDirectoryAtPath:documentsDirectory error:NULL];
+    NSEnumerator *e = [contents objectEnumerator];
+    NSString *filename;
+    while ((filename = [e nextObject])) {
+
+        if ([[filename pathExtension] isEqualToString:extension]) {
+
+            [fileManager removeItemAtPath:[documentsDirectory stringByAppendingPathComponent:filename]
+    error:NULL];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {

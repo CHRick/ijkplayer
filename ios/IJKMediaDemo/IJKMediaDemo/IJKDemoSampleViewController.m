@@ -42,7 +42,7 @@
     [sampleList addObject:@[@"A35视频",
                             @"http://hxbucket.hxbucket.cmcqly.com:91/HIKZR0k1V5xXQ8334OKo090NkI5n733h/Q01020A350300TUMYUSX/2021/05/26/20210526095659_20210526095729.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=HIKZR0k1V5xXQ8334OKo090NkI5n733h%2F20210526%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210526T024042Z&X-Amz-Expires=604799&X-Amz-SignedHeaders=host&X-Amz-Signature=f4befb50dd51d65275f721e426b9a21dd1f0ccd8826d8f13d857495b7c7b3c41"]];
     [sampleList addObject:@[@"A21视频",
-                            @"http://hdaswycc.hdaswycc.cmqly.com/15/HIK596h889b53t349SfQi2UU7KOhs54K/Q01030A2101006BB4WXU/2021/04/30/20210430124210_20210430124313.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=HIK596h889b53t349SfQi2UU7KOhs54K%2F20210526%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210526T021151Z&X-Amz-Expires=604799&X-Amz-SignedHeaders=host&X-Amz-Signature=bd2dcb79b1cf056fcd503fb5c10a36928c8937851b6feb86c9bccb5677ab982d"]];
+                            @"http://hdaswycc.hdaswycc.cmqly.com/7/HIK596h889b53t349SfQi2UU7KOhs54K/Q01030A2101A12K6HCKR/2021/06/15/20210615080030_20210615080132.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=HIK596h889b53t349SfQi2UU7KOhs54K%2F20210615%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210615T034305Z&X-Amz-Expires=604799&X-Amz-SignedHeaders=host&X-Amz-Signature=605618e16647f24fbb3ca3da84f5b569e52d324693d3066d12ddbecf7decef80"]];
     [sampleList addObject:@[@"bipbop basic 400x300 @ 232 kbps",
                             @"http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"]];
     [sampleList addObject:@[@"bipbop basic 640x480 @ 650 kbps",
