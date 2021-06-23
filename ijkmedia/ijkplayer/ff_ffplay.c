@@ -4478,6 +4478,10 @@ int ffp_start_recording_l(FFPlayer *ffp,const char *file_name)
             }
                     
             out_stream->codec->codec_tag = 0;
+            if (out_stream->codec->codec_type == AVMEDIA_TYPE_VIDEO &&
+                out_stream->codec->codec_id == AV_CODEC_ID_HEVC) {
+                out_stream->codec->codec_tag = MKTAG('h', 'v', 'c', '1');
+            }
             if (ffp->m_ofmt_ctx->oformat->flags & AVFMT_GLOBALHEADER) {
                 out_stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
             }

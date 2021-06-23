@@ -55,11 +55,11 @@
     [documentsUrl setResourceValue:[NSNumber numberWithBool:YES]
                             forKey:NSURLIsExcludedFromBackupKey
                              error:&error];
-    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *inpath = [docDir stringByAppendingPathComponent:@"1623736319.mov"];
-    NSString *outpath = [docDir stringByAppendingPathComponent:@"final.mov"];
-    int ret = [IJKMediaUtils transcodeFile:inpath toFile:outpath];
-    NSLog(@"%d", ret);
+//    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+//    NSString *inpath = [docDir stringByAppendingPathComponent:@"1623736319.mov"];
+//    NSString *outpath = [docDir stringByAppendingPathComponent:@"final.mov"];
+//    int ret = [IJKMediaUtils transcodeFile:inpath toFile:outpath];
+//    NSLog(@"%d", ret);
     
 }
 
