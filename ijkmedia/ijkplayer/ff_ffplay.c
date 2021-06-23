@@ -4478,6 +4478,7 @@ int ffp_start_recording_l(FFPlayer *ffp,const char *file_name)
             }
                     
             out_stream->codec->codec_tag = 0;
+            //stbl容器的stsd容器下，QuickTime可以播放的视频为hvc1容器，而无法播放的视频，为hev1容器
             if (out_stream->codec->codec_type == AVMEDIA_TYPE_VIDEO &&
                 out_stream->codec->codec_id == AV_CODEC_ID_HEVC) {
                 out_stream->codec->codec_tag = MKTAG('h', 'v', 'c', '1');
