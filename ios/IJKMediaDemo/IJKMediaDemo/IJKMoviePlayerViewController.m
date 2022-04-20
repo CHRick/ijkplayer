@@ -156,6 +156,9 @@
             [player setPlaybackRate:2.0];
             sender.title = @"2.0";
         }else if (player.playbackRate == 2.0) {
+            [player setPlaybackRate:2.5];
+            sender.title = @"3.5";
+        }else if (player.playbackRate == 2.5) {
             [player setPlaybackRate:0.5];
             sender.title = @"0.5";
         }else if (player.playbackRate == 0.5) {

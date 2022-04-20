@@ -23,7 +23,8 @@
 #import "IJKDemoLocalFolderViewController.h"
 #import "IJKDemoSampleViewController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
-#import <IJKMediaFramework/IJKMediaFramework.h>
+//#import <IJKMediaFramework/IJKMediaFramework.h>
+#import <IJKMediaFrameworkWithSSL/IJKMediaFrameworkWithSSL.h>
 
 @interface IJKDemoMainViewController () <UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 

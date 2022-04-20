@@ -22,7 +22,7 @@
  */
 
 #import "IJKMediaUtils.h"
-#include "ff_fftranscoding.h"
+//#include "ff_fftranscoding.h"
 
 @implementation IJKMediaUtils
 
@@ -49,13 +49,13 @@
     return error;
 }
 
-+ (int)transcodeFile:(NSString *)inputFile
-              toFile:(NSString *)outputFile {
-    
-    const char *input = [inputFile cStringUsingEncoding:NSUTF8StringEncoding];
-    const char *output = [outputFile cStringUsingEncoding:NSUTF8StringEncoding];
-    
-    return ffp_transcoding_file(input, output);
-}
+//+ (int)transcodeFile:(NSString *)inputFile
+//              toFile:(NSString *)outputFile {
+//    
+//    const char *input = [inputFile cStringUsingEncoding:NSUTF8StringEncoding];
+//    const char *output = [outputFile cStringUsingEncoding:NSUTF8StringEncoding];
+//    
+//    return ffp_transcoding_file(input, output);
+//}
 
 @end

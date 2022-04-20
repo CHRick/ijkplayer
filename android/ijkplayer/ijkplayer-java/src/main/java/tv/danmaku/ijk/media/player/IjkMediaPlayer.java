@@ -539,6 +539,20 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
         _pause();
     }
 
+    private native  int _startRecord(String filePath) throws IllegalStateException;
+    @Override
+    public void startRecord(String filePath) {
+        stayAwake(true);
+        _startRecord(filePath);
+    }
+
+    private native int _stopRecord() throws IllegalStateException;
+    @Override
+    public void stopRecord() {
+        stayAwake(false);
+        _stopRecord();
+    }
+
     private native void _pause() throws IllegalStateException;
 
     @SuppressLint("Wakelock")

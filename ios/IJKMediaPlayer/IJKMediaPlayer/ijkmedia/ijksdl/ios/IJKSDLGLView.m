@@ -85,7 +85,6 @@ typedef NS_ENUM(NSInteger, IJKSDLGLViewApplicationState) {
         [self registerApplicationObservers];
 
         _didSetupGL = NO;
-        NSLog(@"Is on main thread[initWithFrame]:%d",[NSThread isMainThread]);
         if ([self isApplicationActive] == YES)
             [self setupGLOnce];
     }
@@ -335,7 +334,6 @@ typedef NS_ENUM(NSInteger, IJKSDLGLViewApplicationState) {
 
 - (void)display: (SDL_VoutOverlay *) overlay
 {
-    NSLog(@"Is on main thread[display]:%d",[NSThread isMainThread]);
     if (_didSetupGL == NO)
         return;
 

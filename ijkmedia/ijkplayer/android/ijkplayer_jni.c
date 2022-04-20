@@ -361,6 +361,33 @@ LABEL_RETURN:
     return retval;
 }
 
+static jint
+IjkMediaPlayer_startRecord(JNIEnv *env, jobject thiz, jstring filePath)
+{
+    jint retval = 0;
+    IjkMediaPlayer *mp = jni_get_media_player(evn, thiz);
+    JNI_CHECK_GOTO(mp, env, NULL, "mpjni:startRecord: null mp", LABEL_RETURN);
+    const char *c_path = (*env)->GetStringUTFChars(env, filePath, NULL);
+    retval = ijkmp_ijkmp_start_recording(mp, c_path);
+
+LABEL_RETURN:
+    ijkmp_dec_ref_p(&mp);
+    return retval;
+}
+
+static jint
+IjkMediaPlayer_stopRecord(JNIEnv *env, jobject thiz)
+{
+    jboolean retval = JNI_TRUE;
+    IjkMediaPlayer *mp = jni_get_media_player(evn, thiz);
+    JNI_CHECK_GOTO(mp, env, NULL, "mpjni:stopRecord: null mp", LABEL_RETURN);
+    retval = ijkmp_stop_recording(mp);
+
+LABEL_RETURN:
+    ijkmp_dec_ref_p(&mp);
+    return retval;
+}
+
 static void
 IjkMediaPlayer_release(JNIEnv *env, jobject thiz)
 {
@@ -1150,6 +1177,8 @@ static JNINativeMethod g_methods[] = {
     { "seekTo",                 "(J)V",     (void *) IjkMediaPlayer_seekTo },
     { "_pause",                 "()V",      (void *) IjkMediaPlayer_pause },
     { "isPlaying",              "()Z",      (void *) IjkMediaPlayer_isPlaying },
+    { "_startRecode"             "(Ljava/lang/String)I",  (void *) IjkMediaPlayer_startRecode },
+    { "_stopRecode"              "()I"       (void *) IjkMediaPlayer_stopRecode },
     { "getCurrentPosition",     "()J",      (void *) IjkMediaPlayer_getCurrentPosition },
     { "getDuration",            "()J",      (void *) IjkMediaPlayer_getDuration },
     { "_release",               "()V",      (void *) IjkMediaPlayer_release },

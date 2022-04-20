@@ -36,17 +36,17 @@
 
     NSMutableArray *sampleList = [[NSMutableArray alloc] init];
     [sampleList addObject:@[@"宣传视频",
-                            @"http://promotional.gxycc.cmcqly.com:91/promotionalVideoV1.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=NjWHFEJM603d26cHd646157k2W77t4n9%2F20210331%2Feast-1%2Fs3%2Faws4_request&X-Amz-Date=20210331T022522Z&X-Amz-Expires=1893430861&X-Amz-SignedHeaders=host&X-Amz-Signature=ed451f2c78e77a2dfe71ed9118a220cfac4904d65410126004c8777bb63be6f7"]];
+                            @"https://i.ys7.com/streamer/alarm/url/get?fileId=20220331155713-Q09185205-1-17017-2-1&deviceSerialNo=Q09185205&cn=1&isEncrypted=0&isCloudStored=0&ct=30&lc=7&bn=30_hikalarm-txsh-1256683041&isDevVideo=0"]];
     [sampleList addObject:@[@"电影简介视频",
                             @"http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"]];
     [sampleList addObject:@[@"A35视频",
-                            @"http://hxbucket.hxbucket.cmcqly.com:91/HIKZR0k1V5xXQ8334OKo090NkI5n733h/Q01020A350300TUMYUSX/2021/05/26/20210526095659_20210526095729.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=HIKZR0k1V5xXQ8334OKo090NkI5n733h%2F20210526%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210526T024042Z&X-Amz-Expires=604799&X-Amz-SignedHeaders=host&X-Amz-Signature=f4befb50dd51d65275f721e426b9a21dd1f0ccd8826d8f13d857495b7c7b3c41"]];
+                            @"rtmp://rtmp01open.ys7.com:1935/v3/openpb/C05339398_1_1?begin=20220402042823&end=20220402042833&expire=1648972028&id=430392752932696064&rec=local&t=2bdc436d8531cffd383cefdf19339aeb77e5d85896b1a18d06aba8283725eb14&ev=100"]];
     [sampleList addObject:@[@"A21视频",
-                            @"http://hdaswycc.hdaswycc.cmqly.com/7/HIK596h889b53t349SfQi2UU7KOhs54K/Q01030A2101A12K6HCKR/2021/06/15/20210615080030_20210615080132.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=HIK596h889b53t349SfQi2UU7KOhs54K%2F20210615%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210615T034305Z&X-Amz-Expires=604799&X-Amz-SignedHeaders=host&X-Amz-Signature=605618e16647f24fbb3ca3da84f5b569e52d324693d3066d12ddbecf7decef80"]];
+                            @"https://open.ys7.com/v3/openlive/33010969992817477411:33010647991327997627_1_1.m3u8?expire=1687931986&id=333245786562519040&t=fb557aa7f7279ccf761c183cbc69a8d51fe48dd827ed8f009cb057650981fadf&ev=100&devProto=gb28181"]];
     [sampleList addObject:@[@"bipbop basic 400x300 @ 232 kbps",
                             @"http://hxbucket.hxbucket.cmcqly.com:91/7/HIKZR0k1V5xXQ8334OKo090NkI5n733h/Q01030A2101A12K6HCKR/2021/06/23/20210623111415_20210623111517.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=HIKZR0k1V5xXQ8334OKo090NkI5n733h%2F20210623%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210623T031743Z&X-Amz-Expires=604799&X-Amz-SignedHeaders=host&X-Amz-Signature=4bee20f212c2acd12155f2fdf276c824ce6c95b19469f90555305220a3abf235"]];
     [sampleList addObject:@[@"bipbop basic 640x480 @ 650 kbps",
-                            @"http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear2/prog_index.m3u8"]];
+                            @"rtsp://46.249.213.87:554/playlists/brit-asia_hvga.hpl.3gp"]];
     [sampleList addObject:@[@"bipbop basic 640x480 @ 1 Mbps",
                             @"http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear3/prog_index.m3u8"]];
     [sampleList addObject:@[@"bipbop basic 960x720 @ 2 Mbps",

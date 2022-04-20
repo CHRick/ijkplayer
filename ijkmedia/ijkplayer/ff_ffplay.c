@@ -1872,12 +1872,22 @@ static int configure_video_filters(FFPlayer *ffp, AVFilterGraph *graph, VideoSta
 #ifdef FFP_AVFILTER_PLAYBACK_RATE
     if (fabsf(ffp->pf_playback_rate) > 0.00001 &&
         fabsf(ffp->pf_playback_rate - 1.0f) > 0.00001) {
-        char setpts_buf[256];
-        float rate = 1.0f / ffp->pf_playback_rate;
-        rate = av_clipf_c(rate, 0.5f, 2.0f);
-        av_log(ffp, AV_LOG_INFO, "vf_rate=%f(1/%f)\n", ffp->pf_playback_rate, rate);
-        snprintf(setpts_buf, sizeof(setpts_buf), "%f*PTS", rate);
-        INSERT_FILT("setpts", setpts_buf);
+        if (ffp->pf_playback_rate <= 2.0) {
+            char setpts_buf[256];
+            float rate = 1.0f / ffp->pf_playback_rate;
+            rate = av_clipf_c(rate, 0.5f, 2.0f);
+            av_log(ffp, AV_LOG_INFO, "vf_rate=%f(1/%f)\n", ffp->pf_playback_rate, rate);
+            snprintf(setpts_buf, sizeof(setpts_buf), "%f*PTS", rate);
+            INSERT_FILT("setpts", setpts_buf);
+        }else {
+            char setpts_buf1[256], setpts_buf2[256];
+            snprintf(setpts_buf1, sizeof(setpts_buf1), "0.5*PTS");
+            INSERT_FILT("setpts", setpts_buf1);
+            float rate = 1.0 / (ffp->pf_playback_rate / 2.0);
+            rate = av_clipf_c(rate, 0.5f, 2.0f);
+            snprintf(setpts_buf2, sizeof(setpts_buf2), "%f*PTS", rate);
+            INSERT_FILT("setpts", setpts_buf2);
+        }
     }
 #endif
 
@@ -1967,7 +1977,11 @@ static int configure_audio_filters(FFPlayer *ffp, const char *afilters, int forc
             av_strlcatf(afilters_args, sizeof(afilters_args), ",");
 
         av_log(ffp, AV_LOG_INFO, "af_rate=%f\n", ffp->pf_playback_rate);
-        av_strlcatf(afilters_args, sizeof(afilters_args), "atempo=%f", ffp->pf_playback_rate);
+        if (ffp->pf_playback_rate <= 2.0) {
+            av_strlcatf(afilters_args, sizeof(afilters_args), "atempo=%f", ffp->pf_playback_rate);
+        }else {
+            av_strlcatf(afilters_args, sizeof(afilters_args), "atempo=2.0,atempo=%f",  ffp->pf_playback_rate / 2.0);
+        }
     }
 #endif
 
